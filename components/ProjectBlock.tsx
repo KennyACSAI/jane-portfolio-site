@@ -10,11 +10,6 @@ type Props = { project: Project; index: number };
 
 /**
  * Decide gallery layout based on image count.
- * - 1: single full-bleed plate, max-width column 7
- * - 2: side-by-side
- * - 3: 2 + 1 (one large left, one stacked right)
- * - 4: 2×2
- * - 5+: masonry-ish 2-col grid, alternating heights
  */
 function GalleryLayout({ images, title }: { images: string[]; title: string }) {
   const n = images.length;
@@ -70,7 +65,6 @@ function GalleryLayout({ images, title }: { images: string[]; title: string }) {
     );
   }
 
-  // 5+: alternating masonry on 2 columns
   return (
     <div className="col-span-12 grid grid-cols-1 md:grid-cols-2 gap-4">
       {images.map((src, i) => (
@@ -106,11 +100,151 @@ function Plate({ src, alt, index }: { src: string; alt: string; index: number })
   );
 }
 
+/** ShopGO-specific brand block: mission/vision/concept/palette/features/problem. */
+function ShopGoBrandBlock({ project }: { project: Project }) {
+  if (
+    !project.mission &&
+    !project.vision &&
+    !project.problem &&
+    !project.palette
+  ) {
+    return null;
+  }
+  return (
+    <Reveal delay={0.25}>
+      <div className="mt-10 grid grid-cols-12 gap-x-4 gap-y-8">
+        {project.problem ? (
+          <div className="col-span-12 md:col-span-7">
+            <div className="text-[11px] uppercase tracking-[0.22em] text-ink-950 mb-2">Problem</div>
+            <p className="text-base leading-snug text-ink-700 max-w-[58ch]">
+              {project.problem}
+            </p>
+            {project.problemKo ? (
+              <p className="mt-3 text-sm leading-relaxed text-ink-500 max-w-[58ch]">
+                {project.problemKo}
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+
+        {project.features ? (
+          <div className="col-span-12 md:col-span-5">
+            <div className="text-[11px] uppercase tracking-[0.22em] text-ink-950 mb-2">
+              Key features
+            </div>
+            <ul className="text-base leading-snug text-ink-700 space-y-1">
+              {project.features.map((f, i) => (
+                <li key={i} className="flex gap-3">
+                  <span className="text-ink-400 tabular-nums w-5">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
+        {project.mission ? (
+          <div className="col-span-12 md:col-span-6">
+            <div className="text-[11px] uppercase tracking-[0.22em] text-ink-950 mb-2">Mission</div>
+            <p className="text-base italic leading-snug text-ink-700 max-w-[58ch]">
+              “{project.mission}”
+            </p>
+          </div>
+        ) : null}
+
+        {project.vision ? (
+          <div className="col-span-12 md:col-span-6">
+            <div className="text-[11px] uppercase tracking-[0.22em] text-ink-950 mb-2">Vision</div>
+            <p className="text-base italic leading-snug text-ink-700 max-w-[58ch]">
+              “{project.vision}”
+            </p>
+          </div>
+        ) : null}
+
+        {(project.concept || project.palette || project.fonts) ? (
+          <div className="col-span-12 grid grid-cols-12 gap-4 pt-6 border-t hairline">
+            {project.concept ? (
+              <div className="col-span-12 md:col-span-5">
+                <div className="text-[11px] uppercase tracking-[0.22em] text-ink-950 mb-2">
+                  Concept
+                </div>
+                <p className="text-sm text-ink-700">{project.concept}</p>
+              </div>
+            ) : null}
+            {project.palette ? (
+              <div className="col-span-6 md:col-span-4">
+                <div className="text-[11px] uppercase tracking-[0.22em] text-ink-950 mb-2">
+                  Palette
+                </div>
+                <div className="flex gap-2 items-center">
+                  {project.palette.map((c) => (
+                    <div key={c} className="flex flex-col items-start gap-1">
+                      <span
+                        aria-hidden
+                        className="block w-7 h-7 ring-1 ring-ink-200"
+                        style={{ background: c }}
+                      />
+                      <span className="text-[10px] uppercase tracking-[0.18em] text-ink-500 tabular-nums">
+                        {c}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+            {project.fonts ? (
+              <div className="col-span-6 md:col-span-3">
+                <div className="text-[11px] uppercase tracking-[0.22em] text-ink-950 mb-2">
+                  Typography
+                </div>
+                <ul className="text-sm text-ink-700 space-y-0.5">
+                  {project.fonts.map((f) => (
+                    <li key={f}>{f}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
+    </Reveal>
+  );
+}
+
+/** Hanbok-specific process steps. */
+function ProcessSteps({ project }: { project: Project }) {
+  if (!project.process) return null;
+  return (
+    <Reveal delay={0.25}>
+      <div className="mt-10">
+        <div className="text-[11px] uppercase tracking-[0.22em] text-ink-950 mb-3">Process</div>
+        <ol className="grid grid-cols-1 md:grid-cols-3 gap-6 border-t hairline pt-6">
+          {project.process.map((p, i) => (
+            <li key={i} className="text-sm text-ink-700">
+              <div className="text-[11px] uppercase tracking-[0.22em] text-ink-400 tabular-nums mb-2">
+                {String(i + 1).padStart(2, '0')}
+              </div>
+              <p className="leading-snug">{p.step}</p>
+              {p.mediums ? (
+                <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-ink-500 normal-case">
+                  {p.mediums}
+                </p>
+              ) : null}
+            </li>
+          ))}
+        </ol>
+      </div>
+    </Reveal>
+  );
+}
+
 export function ProjectBlock({ project }: Props) {
   return (
     <article id={project.id} className="px-6 sm:px-10 py-20 border-t hairline relative">
-      {/* Header */}
-      <div className="grid grid-cols-12 gap-4 mb-12">
+      {/* Header row */}
+      <div className="grid grid-cols-12 gap-4 mb-8">
         <div className="col-span-2 md:col-span-1 text-sm tabular-nums text-ink-400 font-medium">
           {project.number}
         </div>
@@ -137,6 +271,11 @@ export function ProjectBlock({ project }: Props) {
               {project.year ? <span>· {project.year}</span> : null}
               {project.collaborators ? (
                 <span className="text-ink-700">{project.collaborators}</span>
+              ) : null}
+              {project.status ? (
+                <span className="text-ink-950">
+                  ◌ {project.status}
+                </span>
               ) : null}
             </div>
           </Reveal>
@@ -168,11 +307,6 @@ export function ProjectBlock({ project }: Props) {
                   <div className="text-right tabular-nums">{project.dimensions}</div>
                 </>
               ) : null}
-              {project.contributions ? (
-                <div className="col-span-2 text-ink-700 text-[11px] tracking-[0.18em] normal-case mt-2">
-                  ↳ {project.contributions}
-                </div>
-              ) : null}
               <div className="col-span-2 text-ink-400 tabular-nums mt-2">
                 {project.images.length} plate{project.images.length === 1 ? '' : 's'}
               </div>
@@ -181,8 +315,34 @@ export function ProjectBlock({ project }: Props) {
         </div>
       </div>
 
+      {/* Description body — sits in the title's column to read as caption-prose, not body. */}
+      {project.description ? (
+        <div className="grid grid-cols-12 gap-4 mb-12">
+          <div className="hidden md:block md:col-span-1" />
+          <Reveal delay={0.18} y={14} className="col-span-12 md:col-span-7">
+            <p className="text-base md:text-[17px] leading-relaxed text-ink-700 max-w-[64ch]">
+              {project.description}
+            </p>
+            {project.contributions ? (
+              <p className="mt-4 text-sm leading-snug text-ink-600 max-w-[64ch]">
+                <span className="text-[11px] uppercase tracking-[0.22em] text-ink-950 mr-2">
+                  Contributions
+                </span>
+                {project.contributions}
+              </p>
+            ) : null}
+          </Reveal>
+        </div>
+      ) : null}
+
+      {/* ShopGO brand block (only renders if its fields are present). */}
+      <ShopGoBrandBlock project={project} />
+
+      {/* Hanbok process steps (only renders if present). */}
+      <ProcessSteps project={project} />
+
       {/* Gallery */}
-      <div className="grid grid-cols-12 gap-4">
+      <div className={`grid grid-cols-12 gap-4 ${project.description || project.process || project.mission ? 'mt-12' : ''}`}>
         <GalleryLayout images={project.images} title={project.title} />
       </div>
     </article>
