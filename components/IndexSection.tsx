@@ -68,9 +68,9 @@ export function IndexSection() {
                             {p.number}
                           </span>
                           <span className="col-span-11 md:col-span-9 text-base md:text-lg text-ink-950 leading-snug">
-                            <span className="relative inline-block">
+                            <span className="relative inline-block pb-[2px]">
                               {p.title}
-                              <span className="absolute left-0 -bottom-px h-px w-full bg-ink-950 origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-700 ease-editorial" />
+                              <span className="absolute left-0 bottom-0 h-px w-full bg-ink-950 origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-700 ease-editorial" />
                             </span>
                             {p.location ? <span className="text-ink-500"> — {p.location}</span> : null}
                           </span>
