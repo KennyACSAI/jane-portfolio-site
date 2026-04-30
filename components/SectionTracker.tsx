@@ -7,6 +7,7 @@ const sections: { id: string; label: string }[] = [
   { id: 'top',             label: 'Cover'        },
   { id: 'index',           label: 'Index'        },
   { id: 'site-planning',   label: 'Site'         },
+  { id: 'gis-studies',     label: 'GIS'          },
   { id: 'interior',        label: 'Interior'     },
   { id: 'design-by-jane',  label: 'Design'       },
   { id: 'contact',         label: 'Thank you'    },

@@ -7,6 +7,7 @@ import { GlassEffect } from './ui/liquid-glass';
 const links = [
   { label: 'Index', href: '#index' },
   { label: 'Site', href: '#site-planning' },
+  { label: 'GIS', href: '#gis-studies' },
   { label: 'Interior', href: '#interior' },
   { label: 'Design', href: '#design-by-jane' },
   { label: 'Contact', href: '#contact' },

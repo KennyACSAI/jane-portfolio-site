@@ -1,15 +1,13 @@
 'use client';
 
 import { motion, useReducedMotion } from 'framer-motion';
-import { projects } from '@/lib/projects';
+import { projectsByCategory } from '@/lib/projects';
 import { MaskReveal } from './anim/MaskReveal';
 import { SplitText } from './anim/SplitText';
 
-const groups = [
-  { label: 'Site Planning', items: projects.filter((p) => p.category === 'Site Planning') },
-  { label: 'Interior Design', items: projects.filter((p) => p.category === 'Interior Design') },
-  { label: 'Design by Jane', items: projects.filter((p) => p.category === 'Design by Jane') },
-];
+const groups = (
+  ['Site Planning', 'GIS Studies', 'Interior Design', 'Design by Jane'] as const
+).map((label) => ({ label, items: projectsByCategory[label] }));
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -35,10 +33,14 @@ export function IndexSection() {
         <ul className="col-span-12 md:col-span-9 divide-y hairline border-t hairline">
           {groups.map((g, gi) => (
             <li key={g.label} className="py-6">
-              <MaskReveal delay={gi * 0.1}>
+              <MaskReveal delay={gi * 0.08}>
                 <div className="grid grid-cols-12 gap-4 items-baseline">
                   <div className="col-span-12 md:col-span-3 text-sm font-bold uppercase tracking-[0.18em] text-ink-950">
                     {g.label}
+                    <span className="ml-2 text-ink-400 tabular-nums font-medium">
+                      ·{' '}
+                      {String(g.items.length).padStart(2, '0')}
+                    </span>
                   </div>
                   <motion.ul
                     className="col-span-12 md:col-span-9 space-y-2"
@@ -47,7 +49,7 @@ export function IndexSection() {
                     viewport={{ once: true, margin: '0px 0px -10% 0px' }}
                     variants={{
                       hidden: {},
-                      show: { transition: { staggerChildren: 0.05, delayChildren: gi * 0.1 + 0.2 } },
+                      show: { transition: { staggerChildren: 0.04, delayChildren: gi * 0.08 + 0.15 } },
                     }}
                   >
                     {g.items.map((p) => (
@@ -65,14 +67,12 @@ export function IndexSection() {
                           <span className="col-span-1 text-ink-400 tabular-nums text-sm font-medium">
                             {p.number}
                           </span>
-                          <span className="col-span-11 md:col-span-9 text-base md:text-lg text-ink-950 leading-snug relative">
+                          <span className="col-span-11 md:col-span-9 text-base md:text-lg text-ink-950 leading-snug">
                             <span className="relative inline-block">
                               {p.title}
                               <span className="absolute left-0 -bottom-px h-px w-full bg-ink-950 origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-700 ease-editorial" />
                             </span>
-                            {p.location ? (
-                              <span className="text-ink-500"> — {p.location}</span>
-                            ) : null}
+                            {p.location ? <span className="text-ink-500"> — {p.location}</span> : null}
                           </span>
                           <span className="hidden md:inline col-span-2 text-right text-ink-400 group-hover:text-ink-950 transition-colors duration-500 text-sm">
                             ↗

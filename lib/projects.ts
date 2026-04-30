@@ -1,232 +1,237 @@
+export type Category =
+  | 'Site Planning'
+  | 'GIS Studies'
+  | 'Interior Design'
+  | 'Design by Jane';
+
 export type Project = {
   id: string;
   number: string;
   title: string;
   subtitle?: string;
   location?: string;
-  category: 'Site Planning' | 'Interior Design' | 'Design by Jane';
+  category: Category;
   year?: string;
   software?: string[];
   contributions?: string;
-  description: string;
-  spreadImage: string;
-  thumbImage: string;
   collaborators?: string;
   medium?: string;
   dimensions?: string;
+  /** Ordered list of image paths under /public. */
+  images: string[];
 };
 
+const img = (slug: string, n: number) => `/projects/${slug}/${String(n).padStart(2, '0')}.jpg`;
+const range = (slug: string, count: number) =>
+  Array.from({ length: count }, (_, i) => img(slug, i + 1));
+
 export const projects: Project[] = [
+  // ───────────── Site Planning ─────────────
   {
-    id: 'montgomery',
+    id: '01-montgomery',
     number: '01',
     title: 'Montgomery Site Analysis',
     location: 'Calgary',
     category: 'Site Planning',
-    description:
-      'Urban site analysis of the Montgomery district focused on spatial structure, pedestrian conditions, historical development, and environmental factors such as sun paths and wind patterns. Permeability mapping, street observations, section drawings, signage analysis, figure-ground and asphalt mapping — combined as pedestrian satisfaction layers to understand how the area functions and how people interact with the urban environment.',
     software: ['Photoshop', 'Illustrator', 'InDesign'],
-    spreadImage: '/pdf-pages/page-03.jpg',
-    thumbImage: '/pdf-pages/thumb-03.jpg',
+    collaborators: 'with Jonas Laurent Henderson',
+    images: range('01-montgomery', 2),
   },
   {
-    id: '9-ave-inglewood',
+    id: '02-9-ave-inglewood',
     number: '02',
     title: '9 Ave Inglewood Site Planning',
     location: 'Calgary',
     category: 'Site Planning',
-    description:
-      'Urban analysis along the 9th Avenue corridor in Calgary, proposing a public-integrated unit surrounding streets and commercial activity. Site analysis through patterns, noise and wind, surrounding land uses, and environmental factors including air quality and sun paths.',
     software: ['Photoshop', 'Illustrator', 'InDesign'],
-    spreadImage: '/pdf-pages/page-04.jpg',
-    thumbImage: '/pdf-pages/thumb-04.jpg',
+    images: range('02-9-ave-inglewood', 5),
   },
   {
-    id: 'porta-verde',
+    id: '03-porta-verde',
     number: '03',
     title: 'Porta Verde Site Planning',
     location: 'Calgary',
     category: 'Site Planning',
-    description:
-      'Urban-design proposal developed after a comprehensive site analysis near the Bow River in Calgary. The proposal examines surrounding infrastructure, building heights, transportation access, and environmental factors such as wind and shadow patterns to understand how the area connects with the urban environment.',
     software: ['Illustrator', 'InDesign', 'Enscape', 'SketchUp'],
-    spreadImage: '/pdf-pages/page-05.jpg',
-    thumbImage: '/pdf-pages/thumb-05.jpg',
+    images: range('03-porta-verde', 2),
   },
   {
-    id: 'hh-bh',
+    id: '04-hh-bh',
     number: '04',
     title: 'HH/BH Community Planning',
     subtitle: 'Hounsfield Heights / Briar Hill',
     location: 'Calgary',
     category: 'Site Planning',
-    description:
-      'Community-planning proposal that strengthens public space and neighbourhood connections. Set includes master plan and a master-plan section drawing illustrating spatial development.',
-    contributions: 'Master plan, procedural research, perspective drawings, group branding/logo design, master-plan development.',
     software: ['ArchiCAD', 'Photoshop', 'Illustrator', 'InDesign', 'Procreate', 'Rhino', 'Grasshopper'],
-    spreadImage: '/pdf-pages/page-06.jpg',
-    thumbImage: '/pdf-pages/thumb-06.jpg',
+    contributions: 'Master plan, perspective drawings, group branding.',
+    images: range('04-hh-bh', 2),
   },
   {
-    id: '10th-street',
+    id: '05-10th-street',
     number: '05',
     title: '10th Street Typologies',
     subtitle: 'Urban Streetscape Study',
     location: 'Calgary',
     category: 'Site Planning',
     year: 'October 2025',
-    collaborators: 'Abby Neilson & Jane Kanat',
-    description:
-      'Analysis of spatial conditions and pedestrian experience along 10th Street, examining street typologies, urban materiality, social interaction, and temporary use of public space. The study combines fieldwork, photography, analytical drawings, and diagrammatic mapping to identify opportunities for improving walkability and public life along the corridor.',
-    contributions: '3–4 analytical drawings and spatial studies, site analysis diagrams, and poster layout.',
-    spreadImage: '/pdf-pages/page-07.jpg',
-    thumbImage: '/pdf-pages/thumb-07.jpg',
+    collaborators: 'with Abby Neilson',
+    images: range('05-10th-street', 1),
   },
   {
-    id: 'nose-hill',
+    id: '06-nose-hill',
     number: '06',
     title: 'Nose Hill Site Analysis',
     subtitle: 'Ecological Landscape Study',
     location: 'Calgary',
     category: 'Site Planning',
     year: 'August – October 2025',
-    description:
-      'Environmental site analysis of the Nose Hill natural area focusing on ecological patterns, vegetation distribution, and landscape characteristics. The study examines seasonal conditions, plant species, and terrain relationships to understand how natural systems shape the site. Analytical diagrams and visual documentation were used to interpret ecological identity and landscape dynamics.',
-    contributions: 'Cross-section drawing, historical timeline collage, and poster layout.',
-    spreadImage: '/pdf-pages/page-08.jpg',
-    thumbImage: '/pdf-pages/thumb-08.jpg',
+    images: range('06-nose-hill', 1),
   },
+
+  // ───────────── GIS Studies ─────────────
   {
-    id: 'tamerlan',
+    id: '07-gis-lrt',
     number: '07',
-    title: 'Interior Design "Residential Complex Tamerlan"',
-    location: 'Astana',
-    category: 'Interior Design',
-    description:
-      'Interior project staged from initial CAD modelling through 3D visualization to assembled real-life furniture. Stages: ArchiCAD initial model, 3DSMax rendering, real-life assembly. Outputs include master plan, top-view rendering, and bedroom rendering.',
-    software: ['ArchiCAD', '3DSMax', 'Coohom'],
-    spreadImage: '/pdf-pages/page-10.jpg',
-    thumbImage: '/pdf-pages/thumb-10.jpg',
+    title: 'Spatial Correlation',
+    subtitle: 'Population Density × LRT Corridors',
+    location: 'Calgary',
+    category: 'GIS Studies',
+    year: 'February 2026',
+    software: ['ArcGIS Pro'],
+    images: range('07-gis-lrt', 1),
   },
   {
-    id: 'royal-expo',
+    id: '08-gis-housing',
     number: '08',
-    title: 'Interior Design "Residential Complex Royal Expo"',
-    location: 'Astana',
-    category: 'Interior Design',
-    description:
-      'Interior design project focused on creating functional and aesthetically balanced spaces within limited budget constraints. Emphasis on efficient space planning, ergonomic use of indoor environments, and practical material choices that maximize usability within client demands. Includes intuitive placement, lighting, alignment, and spatial proportions to ensure the space supports everyday activities while maintaining a coherent visual identity.',
-    software: ['SketchUp', 'Enscape'],
-    spreadImage: '/pdf-pages/page-11.jpg',
-    thumbImage: '/pdf-pages/thumb-11.jpg',
+    title: 'Suburban Housing × Transit Use',
+    subtitle: 'Single-family density and car/transit correlation',
+    location: 'Calgary',
+    category: 'GIS Studies',
+    year: 'February 2026',
+    software: ['ArcGIS Pro'],
+    images: range('08-gis-housing', 1),
   },
   {
-    id: 'samruk-energy',
+    id: '09-gis-zoning',
     number: '09',
-    title: 'Space Design "Samruk Energy"',
+    title: 'Land-Use Zoning & Density',
+    subtitle: 'Residential land-use classification',
+    location: 'Calgary',
+    category: 'GIS Studies',
+    year: 'March 2026',
+    software: ['ArcGIS Pro'],
+    images: range('09-gis-zoning', 1),
+  },
+
+  // ───────────── Interior Design ─────────────
+  {
+    id: '10-tamerlan',
+    number: '10',
+    title: 'Residential Complex Tamerlan',
+    subtitle: 'Apartment interior',
     location: 'Astana',
     category: 'Interior Design',
-    description:
-      'Office space and conference-room design exploring formal balance, lighting and circulation. Carried out for the Samruk Energy headquarters.',
-    software: ['ArchiCAD', 'Coohom'],
-    spreadImage: '/pdf-pages/page-12.jpg',
-    thumbImage: '/pdf-pages/thumb-12.jpg',
+    software: ['ArchiCAD', '3DSMax', 'Coohom'],
+    images: range('10-tamerlan', 7),
   },
   {
-    id: 'shopgo',
-    number: '10',
-    title: 'Capstone Project — ShopGO',
-    subtitle: 'Pitch Presentation & Progress Record',
-    category: 'Design by Jane',
-    collaborators: 'Group: Neulis Neue',
-    description:
-      'Students in Yonsei struggle with high grocery costs and food waste due to unpredictable schedules. ShopGO is a reliable grocery shopping platform created for a sustainable, cost-effective solution. Mission: empower students to make informed and efficient grocery decisions by leveraging real-time pricing, clear nutritional information, and convenient pickup. Vision: leading smart-grocery collaboration through location-based shopping and community-driven well-being.',
-    contributions: 'Mission/vision statements, key feature definition, in-app UI screens, pitch deck design.',
-    spreadImage: '/pdf-pages/page-13.jpg',
-    thumbImage: '/pdf-pages/thumb-13.jpg',
-  },
-  {
-    id: '3d-projects',
+    id: '11-royal-expo',
     number: '11',
+    title: 'Royal Expo · Casa Nostra',
+    subtitle: 'Residential complex master plan',
+    location: 'Astana',
+    category: 'Interior Design',
+    software: ['SketchUp', 'Enscape'],
+    images: range('11-royal-expo', 1),
+  },
+  {
+    id: '12-samruk',
+    number: '12',
+    title: 'Samruk Energy',
+    subtitle: 'Conference & office space',
+    location: 'Astana',
+    category: 'Interior Design',
+    software: ['ArchiCAD', 'Coohom'],
+    images: range('12-samruk', 11),
+  },
+
+  // ───────────── Design by Jane ─────────────
+  {
+    id: '13-shopgo',
+    number: '13',
+    title: 'ShopGO',
+    subtitle: 'Capstone — pitch deck',
+    category: 'Design by Jane',
+    year: '2025',
+    collaborators: 'with Janhavi · Radhika · Bilal',
+    images: range('13-shopgo', 8),
+  },
+  {
+    id: '14-3d-projects',
+    number: '14',
     title: '3D Projects · Posters',
-    subtitle: 'Formula 1 filter · Scene in the Style of de Chirico',
+    subtitle: 'F1 Filter · Scene in the Style of de Chirico',
     category: 'Design by Jane',
     year: '2023',
-    description:
-      '"Scene in the Style of de Chirico" — a 3D digital artwork created using Blender with applied textures; variable digital output. Plus a Formula 1 Instagram Filter built in Meta Spark with Blender-modeled assets and Adobe Illustrator graphics.',
     software: ['Blender', 'Meta Spark', 'Adobe Illustrator'],
-    spreadImage: '/pdf-pages/page-14.jpg',
-    thumbImage: '/pdf-pages/thumb-14.jpg',
+    images: range('14-3d-projects', 2),
   },
   {
-    id: 'color-theory',
-    number: '12',
+    id: '15-color-theory',
+    number: '15',
     title: 'Color Theory · Color Analysis',
     category: 'Design by Jane',
-    medium: '"Winsor & Newton" Designers Gouache, Adobe Illustrator',
-    description:
-      'A study of color through composition, harmony and psychology. Color Theory exercises explore the wheel, complementary pairs, brightness, vibration and transparent illusions. Color Analysis decomposes a reference photograph into a constructed palette, harmony types, applied fragments and exercises.',
-    spreadImage: '/pdf-pages/page-15.jpg',
-    thumbImage: '/pdf-pages/thumb-15.jpg',
+    medium: 'Designers Gouache · Adobe Illustrator',
+    images: range('15-color-theory', 2),
   },
   {
-    id: 'reproductions-i',
-    number: '13',
+    id: '16-reproductions-i',
+    number: '16',
     title: 'Art Reproductions I',
     subtitle: 'Van Gogh — Starry Night over the Rhône / Starry Night',
     category: 'Design by Jane',
     medium: 'Oil and acrylic on A2 canvas',
     dimensions: '42 × 59.4 cm',
     year: '2021–2022',
-    description:
-      'Two reproductions of Van Gogh paintings created as gifts for parents. The process explores layering, brush direction and expressive impasto-style mark-making — interest in Starlandbox and the detail-of-process visible in the original.',
-    spreadImage: '/pdf-pages/page-16.jpg',
-    thumbImage: '/pdf-pages/thumb-16.jpg',
+    images: range('16-reproductions-i', 2),
   },
   {
-    id: 'reproductions-ii',
-    number: '14',
+    id: '17-reproductions-ii',
+    number: '17',
     title: 'Art Reproductions II',
     subtitle: 'Klimt — The Kiss',
     category: 'Design by Jane',
-    medium: '"Winsor & Newton" Designers Gouache, A2 format paper',
+    medium: 'Designers Gouache, A2 paper',
     dimensions: '30 × 32 cm',
-    description:
-      'Reproduction of Klimt\'s "The Kiss" produced in four variants: original, printed copy (upper right), monochromatic (bottom left), and complementary (bottom right) — a study of value, color reduction, and chromatic translation.',
-    spreadImage: '/pdf-pages/page-17.jpg',
-    thumbImage: '/pdf-pages/thumb-17.jpg',
+    images: range('17-reproductions-ii', 4),
   },
   {
-    id: 'sketches',
-    number: '15',
+    id: '18-sketches',
+    number: '18',
     title: 'Sketches',
+    subtitle: 'Hands & legs',
     category: 'Design by Jane',
     medium: 'Pencil H, HB · Sketchbook',
     dimensions: '29.7 × 42 cm',
     year: '2023',
-    description:
-      'Studies of the human body and movement — a sequence of feet and hand drawings made in order to understand human form, weight, and gesture.',
-    spreadImage: '/pdf-pages/page-18.jpg',
-    thumbImage: '/pdf-pages/thumb-18.jpg',
+    images: range('18-sketches', 3),
   },
   {
-    id: 'art-installations',
-    number: '16',
+    id: '19-installations',
+    number: '19',
     title: 'Art Installations',
     subtitle: '"dancing in a hanbok"',
     category: 'Design by Jane',
     year: '2023',
-    medium: 'Colored paper, tape, hot glue, scissors',
+    medium: 'Colored paper, tape, hot glue',
     dimensions: 'approx. 150 × 200 cm',
-    description:
-      'A spatial collage that captures looking from one perspective and emerges as a folded, layered construction. Three documented stages — sketch geometry over a folded-paper backdrop, drawings of three-dimensional objects, and an installed piece responding to a stairwell context.',
-    spreadImage: '/pdf-pages/page-19.jpg',
-    thumbImage: '/pdf-pages/thumb-19.jpg',
+    images: range('19-installations', 2),
   },
 ];
 
-export const projectsByCategory = {
+export const projectsByCategory: Record<Category, Project[]> = {
   'Site Planning': projects.filter((p) => p.category === 'Site Planning'),
+  'GIS Studies': projects.filter((p) => p.category === 'GIS Studies'),
   'Interior Design': projects.filter((p) => p.category === 'Interior Design'),
   'Design by Jane': projects.filter((p) => p.category === 'Design by Jane'),
 };
