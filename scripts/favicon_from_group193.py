@@ -65,17 +65,10 @@ def main() -> None:
     base = trim_to_content(src)
     print(f'Trimmed: {base.size[0]}x{base.size[1]}')
 
-    # Tiny sizes — preserve strokes.
+    # All sizes — plain high-quality LANCZOS resize.
     for size, path in [
         (16, PUBLIC / 'favicon-16x16.png'),
         (32, PUBLIC / 'favicon-32x32.png'),
-    ]:
-        out = resize_stroke_preserved(base, size)
-        out.save(path, 'PNG', optimize=True)
-        print(f'  wrote {path.name}  {size}x{size}  {path.stat().st_size}b')
-
-    # Large sizes — clean LANCZOS keeps the JK shape.
-    for size, path in [
         (180, APP / 'apple-icon.png'),
         (192, PUBLIC / 'android-chrome-192x192.png'),
         (512, PUBLIC / 'android-chrome-512x512.png'),
@@ -91,7 +84,7 @@ def main() -> None:
     sizes = [16, 32, 48]
     layers = []
     for s in sizes:
-        img = resize_stroke_preserved(base, s) if s <= 32 else resize_clean(base, s)
+        img = resize_clean(base, s)
         buf = io.BytesIO()
         img.save(buf, 'PNG', optimize=True)
         layers.append((s, buf.getvalue()))
