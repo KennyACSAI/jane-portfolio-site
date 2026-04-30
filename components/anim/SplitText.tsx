@@ -1,7 +1,7 @@
 'use client';
 
+import { Fragment, useMemo } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { useMemo } from 'react';
 
 type Props = {
   text: string;
@@ -11,13 +11,22 @@ type Props = {
   duration?: number;
   stagger?: number;
   y?: number;
-  /** Trigger on viewport-enter rather than mount. */
   inView?: boolean;
 };
 
+const ease = [0.22, 1, 0.36, 1] as const;
+
 /**
- * Character-by-character entrance. Each char rises from `y` and fades in,
- * with `stagger` between characters. Spaces preserve layout via &nbsp;.
+ * Per-character stagger that *respects word boundaries*.
+ *
+ * Each word becomes an inline-block wrapper (non-breaking), and the
+ * characters inside it animate individually. Whitespace between words is
+ * rendered as plain text so the browser can break lines there — but
+ * never inside a word.
+ *
+ * The earlier version made every character its own inline-block, which
+ * let the browser wrap a long subtitle in the middle of "Chirico" or
+ * "progress" — that's what we just fixed.
  */
 export function SplitText({
   text,
@@ -30,34 +39,56 @@ export function SplitText({
   inView = false,
 }: Props) {
   const reduce = useReducedMotion();
-  const chars = useMemo(() => text.split(''), [text]);
+  const tokens = useMemo(() => text.split(/(\s+)/), [text]);
 
-  const trigger = inView ? { whileInView: 'show' } : { animate: 'show' };
+  let charIdx = 0;
 
   return (
-    <motion.span
-      className={className}
-      style={{ display: 'inline-block' }}
-      initial="hidden"
-      {...trigger}
-      viewport={{ once: true, margin: '0px 0px -10% 0px' }}
-      variants={{ hidden: {}, show: { transition: { staggerChildren: stagger, delayChildren: delay } } }}
-      aria-label={text}
-    >
-      {chars.map((c, i) => (
-        <motion.span
-          key={i}
-          aria-hidden
-          className={charClassName}
-          style={{ display: 'inline-block', whiteSpace: 'pre' }}
-          variants={{
-            hidden: { y: reduce ? 0 : y, opacity: 0 },
-            show: { y: 0, opacity: 1, transition: { duration, ease: [0.22, 1, 0.36, 1] } },
-          }}
-        >
-          {c === ' ' ? ' ' : c}
-        </motion.span>
-      ))}
-    </motion.span>
+    <span className={className} aria-label={text}>
+      {tokens.map((token, ti) => {
+        // Whitespace tokens stay as raw text — these are the only points
+        // where the browser is allowed to break a line.
+        if (/^\s+$/.test(token)) {
+          return <Fragment key={`ws-${ti}`}>{token}</Fragment>;
+        }
+        // Word: render as one inline-block group so it cannot be split.
+        return (
+          <span
+            key={`w-${ti}`}
+            aria-hidden
+            style={{ display: 'inline-block' }}
+          >
+            {Array.from(token).map((c, ci) => {
+              const i = charIdx++;
+              const animateProps = {
+                opacity: 1,
+                y: 0,
+              };
+              return (
+                <motion.span
+                  key={ci}
+                  className={charClassName}
+                  style={{ display: 'inline-block', willChange: 'transform' }}
+                  initial={{ opacity: 0, y: reduce ? 0 : y }}
+                  {...(inView
+                    ? {
+                        whileInView: animateProps,
+                        viewport: { once: true, margin: '0px 0px -10% 0px' },
+                      }
+                    : { animate: animateProps })}
+                  transition={{
+                    duration,
+                    delay: delay + i * stagger,
+                    ease,
+                  }}
+                >
+                  {c}
+                </motion.span>
+              );
+            })}
+          </span>
+        );
+      })}
+    </span>
   );
 }
