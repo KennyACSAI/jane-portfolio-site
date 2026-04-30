@@ -15,6 +15,8 @@ export const metadata: Metadata = {
   description:
     'Architecture, site planning, interior design and visual studies by Jane Kanat. University of Calgary, 2026.',
   authors: [{ name: 'Jane Kanat' }],
+  manifest: '/site.webmanifest',
+  themeColor: '#0a0a0a',
   openGraph: {
     title: 'Jane Kanat — Personal Portfolio · 2026',
     description: 'Architecture · Site Planning · Interior Design · Studies',
