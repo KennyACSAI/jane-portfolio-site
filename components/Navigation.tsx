@@ -60,10 +60,9 @@ export function Navigation() {
 
           <a
             href="#contact"
-            className="ml-1 sm:ml-2 inline-flex items-center gap-1 text-ink-950 hover:opacity-70 transition-opacity"
+            className="ml-1 sm:ml-2 text-ink-950 hover:opacity-70 transition-opacity"
           >
             Get in touch
-            <span aria-hidden>↗</span>
           </a>
         </div>
         {/* Scroll progress bar across the bottom of the pill */}
