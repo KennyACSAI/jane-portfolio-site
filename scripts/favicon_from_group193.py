@@ -1,7 +1,7 @@
 """Regenerate all favicon variants from Group 193.png."""
 import sys
 from pathlib import Path
-from PIL import Image, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter
 
 sys.stdout.reconfigure(encoding='utf-8')
 
@@ -44,6 +44,25 @@ def resize_clean(img: Image.Image, size: int) -> Image.Image:
     return img.resize((size, size), Image.LANCZOS)
 
 
+def round_corners(img: Image.Image, radius_pct: float = 0.20) -> Image.Image:
+    """Cut transparent rounded corners. radius_pct is fraction of side."""
+    img = img.convert('RGBA')
+    w, h = img.size
+    radius = int(min(w, h) * radius_pct)
+    # Build the mask at 4× and downsample for smooth corners.
+    scale = 4
+    mask_big = Image.new('L', (w * scale, h * scale), 0)
+    ImageDraw.Draw(mask_big).rounded_rectangle(
+        (0, 0, w * scale - 1, h * scale - 1),
+        radius=radius * scale,
+        fill=255,
+    )
+    mask = mask_big.resize((w, h), Image.LANCZOS)
+    out = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    out.paste(img, (0, 0), mask)
+    return out
+
+
 def resize_stroke_preserved(img: Image.Image, size: int) -> Image.Image:
     """For tiny sizes, threshold + dilate so the underline survives."""
     big = img.resize((size * 4, size * 4), Image.LANCZOS).convert('L')
@@ -65,7 +84,7 @@ def main() -> None:
     base = trim_to_content(src)
     print(f'Trimmed: {base.size[0]}x{base.size[1]}')
 
-    # All sizes — plain high-quality LANCZOS resize.
+    # All sizes — clean LANCZOS resize + rounded transparent corners.
     for size, path in [
         (16, PUBLIC / 'favicon-16x16.png'),
         (32, PUBLIC / 'favicon-32x32.png'),
@@ -73,7 +92,7 @@ def main() -> None:
         (192, PUBLIC / 'android-chrome-192x192.png'),
         (512, PUBLIC / 'android-chrome-512x512.png'),
     ]:
-        out = resize_clean(base, size)
+        out = round_corners(resize_clean(base, size))
         out.save(path, 'PNG', optimize=True)
         print(f'  wrote {path.name}  {size}x{size}  {path.stat().st_size}b')
 
@@ -84,7 +103,7 @@ def main() -> None:
     sizes = [16, 32, 48]
     layers = []
     for s in sizes:
-        img = resize_clean(base, s)
+        img = round_corners(resize_clean(base, s))
         buf = io.BytesIO()
         img.save(buf, 'PNG', optimize=True)
         layers.append((s, buf.getvalue()))
